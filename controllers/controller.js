@@ -57,7 +57,18 @@ const signIn = async (req, res) => {
                     message: 'Incorrect password'
                 });
             } else {
-                req.session.isAuth = true;
+                const data = {
+                    name: check.name,
+                    email: check.email,
+                    password: check.password,
+                    phoneNumber: check.phoneNumber,
+                    isVerified: true
+                }
+                check.set(data)
+                await check.save()
+                const expirationTime = new Date();
+                expirationTime.setHours(expirationTime.getHours() + 1);
+                req.session._expires = expirationTime;
                 res.status(200).json({
                     message: 'Sucessfully Logged in'
                 })
@@ -71,12 +82,19 @@ const signIn = async (req, res) => {
 };
 
 
-const isAuth = (req, res, next)=>{
-    if (req.session.isAuth) {
-        next();
+const isAuth = async (req, res, next)=>{
+    // if (req.session.isAuth) {
+    const user = await userModel.findById(req.params.id);
+    if (user) {
+        if (user.isVerified == true) {
+            next();
+        } else {
+            res.json('Please Log in before you perform this action.')
+        }
     } else {
-        res.json('Please Log in before you perform this action.')
+        return res.send('User does not exist')
     }
+    
 }
 
 
