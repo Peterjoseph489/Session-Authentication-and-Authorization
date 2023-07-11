@@ -83,7 +83,6 @@ const signIn = async (req, res) => {
 
 
 const isAuth = async (req, res, next)=>{
-    // if (req.session.isAuth) {
     const user = await userModel.findById(req.params.id);
     if (user) {
         if (user.isVerified == true) {
@@ -94,7 +93,6 @@ const isAuth = async (req, res, next)=>{
     } else {
         return res.send('User does not exist')
     }
-    
 }
 
 
