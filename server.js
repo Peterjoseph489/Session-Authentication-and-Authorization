@@ -40,5 +40,3 @@ app.use(session({
 
 
 app.use('/api', userRouter);
-
-module.exports = MongoDBStore
